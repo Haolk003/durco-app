@@ -1,0 +1,63 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userErr = exports.userSuc = exports.brandErr = exports.brandSuc = exports.categoryErr = exports.categorySuc = exports.productErr = exports.productSuc = exports.authSuc = exports.authError = void 0;
+exports.authError = {
+    ERR_1: "USERNAME NOT FOUND",
+    ERR_2: "INCORRECT PASSWORD",
+    ERR_3: "NO REFRESH TOKEN IN COOKIE",
+    ERR_4: "NO REFRESH TOKEN PRESENT IN DB OR NOT MATCHED",
+    ERR_5: "THERE IS SOMETHING WRONG WITH REFESH TOKEN",
+};
+exports.authSuc = {
+    SUC_1: "ACCOUNT SUCCESSFULLY CREATED",
+    SUC_2: "LOGGED IN SUCCESSFULLY",
+    SUC_3: "GET ACCESSTOKEN SUCCESSFULLY",
+};
+exports.productSuc = {
+    SUC_1: "PRODUCT SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL PRODUCT SUCCESSFULLY",
+    SUC_3: "GET PRODUCT SUCCESSFULLY",
+    SUC_4: "PRODUCT SUCCESSFULLY DELETED",
+    SUC_5: "PRODUCT SUCCESSFULLY UPDATED",
+};
+exports.productErr = {
+    ERR_1: "PRODUCT NOT FOUND",
+    ERR_2: "CREATE PRODUCT FAILED",
+    ERR_3: "UPDATE PRODUCT FAILED",
+    ERR_4: "DELETE PRODUCT FAILED",
+};
+exports.categorySuc = {
+    SUC_1: "CATEGORY SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL CATEGORY SUCCESSFULLY",
+    SUC_3: "CATEGORY SUCCESSFULLY UPDATED",
+    SUC_4: "CATEGORY SUCCESSFULLY DELETED",
+};
+exports.categoryErr = {
+    ERR_1: "CREATE CATEGORY FAILED",
+    ERR_2: "CATEGORY NOT FOUND ",
+};
+exports.brandSuc = {
+    SUC_1: "BRAND SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL BRAND SUCCESSFULLY",
+    SUC_3: "BRAND SUCCESSFULLY UPDATED",
+    SUC_4: "BRAND SUCCESSFULLY DELETED",
+};
+exports.brandErr = {
+    ERR_1: "CREATE BRAND FAILED",
+    ERR_2: "BRAND NOT FOUND",
+    ERR_3: "DELETE BRAND FAILED",
+};
+exports.userSuc = {
+    SUC_1: "USER SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL USER SUCCESSFULLY",
+    SUC_3: "GET USER BY ID SUCCESSFULLY",
+    SUC_4: " USER BY ID SUCCESSFULLY UPDATED",
+    SUC_5: "USER BY ID SUCCESSFULLY DELETED",
+};
+exports.userErr = {
+    ERR_1: "CREATE USER FAILED",
+    ERR_2: "GET ALL USER FAILED",
+    ERR_3: "GET USER BY ID FAILED",
+    ERR_4: "UPDATE USER BY ID FAILTED",
+    ERR_5: "DELETE USER BY ID FAILTED",
+};
