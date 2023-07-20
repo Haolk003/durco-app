@@ -3,6 +3,7 @@ interface tokenSchemaType {
   userId: mongoose.Schema.Types.ObjectId;
   token: string;
   createdAt: Date;
+  type: string;
 }
 const tokenSchema = new mongoose.Schema<tokenSchemaType>({
   userId: {

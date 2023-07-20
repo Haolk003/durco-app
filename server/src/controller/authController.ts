@@ -70,3 +70,16 @@ export const resetPassword = async (
     next(err);
   }
 };
+export const checkTokenVefifyAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id, token } = req.params;
+  try {
+    const user = await userService.checkTokenVerifyEmail(id, token);
+    res.status(200).json({ status: 200, data: user, message: authSuc.SUC_5 });
+  } catch (err) {
+    next(err);
+  }
+};

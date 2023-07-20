@@ -1,7 +1,8 @@
 import cookie from "cookie";
 import CryptoJS from "crypto-js";
-import random from "crypto-js/";
+
 import userModel from "../models/userModel";
+import cartModel from "../models/cartModel";
 import tokenModel from "../models/tokenModel";
 import { authError, authSuc } from "../utils/responseMessage";
 
@@ -10,7 +11,8 @@ import createJwt from "../utils/createToken";
 import { Response } from "express";
 import checkToken from "../utils/checkToken";
 import sendEmail from "../utils/sendEmail";
-import { send } from "process";
+import { snakeCase } from "lodash";
+import validateMongoId from "../validation/validateId";
 
 interface registerProps {
   password: string;
@@ -31,8 +33,17 @@ const register = async (data: registerProps) => {
   if (checkEmail) {
     throw createError(401, "Email already exists");
   }
-
   const newUser = await userModel.create(data);
+  const newToken = await tokenModel.create({
+    token: CryptoJS.lib.WordArray.random(64).toString(),
+    userId: newUser._id,
+  });
+  const url = `${process.env.FRONTEND_HOST}/auth/verified/${newUser._id}/${newToken.token}`;
+  await sendEmail({
+    to: newUser.email,
+    content: url,
+    subject: "Verify Account",
+  });
   return newUser;
 };
 const login = async (data: loginProps, res: Response) => {
@@ -115,13 +126,35 @@ const resetPassword = async (
     { password: newPassword },
     { new: true }
   );
+  await tokenModel.deleteOne({ _id: checkToken._id });
   return updatePassword;
 };
+const checkTokenVerifyEmail = async (userId: string, token: string) => {
+  validateMongoId(userId);
+  const findToken = await tokenModel.findOne({ userId: userId, token: token });
+  if (!findToken) {
+    throw createError(400, authError.ERR_7);
+  }
+  const updateUser = await userModel.findByIdAndUpdate(
+    userId,
+    { verify: true },
+    { new: true }
+  );
+  if (!updateUser) {
+    throw createError(400, authError.ERR_7);
+  }
+  await cartModel.create({ orderBy: userId });
+  await tokenModel.deleteOne({ _id: findToken._id });
+  return updateUser;
+};
+
 const userService = {
   register,
   login,
   handleRefeshToken,
   forgotPassword,
   resetPassword,
+
+  checkTokenVerifyEmail,
 };
 export default userService;

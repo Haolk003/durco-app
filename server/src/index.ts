@@ -5,7 +5,6 @@ import cors from "cors";
 import database from "./config/database";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import cookie from "cookie";
 import createError from "http-errors";
 
 import errMiddleware from "./middleware/errMiddleware";
@@ -14,7 +13,8 @@ import productRouter from "./router/productRouter";
 import categoryRouter from "./router/categoryRouter";
 import brandRouter from "./router/brandRouter";
 import userRouter from "./router/userRouter";
-
+import couponRouter from "./router/couponRouter";
+import cartRouter from "./router/cartRouter";
 const app = express();
 dotenv.config();
 app.use(cors({ credentials: true }));
@@ -29,6 +29,8 @@ app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/user", userRouter);
+app.use("/api/coupon", couponRouter);
+app.use("/api/cart", cartRouter);
 //TODO: catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
