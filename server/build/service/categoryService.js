@@ -8,126 +8,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var categoryModel_1 = __importDefault(require("../models/categoryModel"));
-var createError_1 = __importDefault(require("../utils/createError"));
-var responseMessage_1 = require("../utils/responseMessage");
-var validateId_1 = __importDefault(require("../validation/validateId"));
-var createCategory = function (name, parentCategory) { return __awaiter(void 0, void 0, void 0, function () {
-    var findCategory, newCategory, newCategory;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!parentCategory) return [3 /*break*/, 3];
-                return [4 /*yield*/, categoryModel_1.default.findById(parentCategory)];
-            case 1:
-                findCategory = _a.sent();
-                if (!findCategory) {
-                    throw (0, createError_1.default)(400, responseMessage_1.categoryErr.ERR_2);
-                }
-                return [4 /*yield*/, categoryModel_1.default.create({ name: name, parentCategory: parentCategory })];
-            case 2:
-                newCategory = _a.sent();
-                return [2 /*return*/, newCategory];
-            case 3: return [4 /*yield*/, categoryModel_1.default.create({ name: name })];
-            case 4:
-                newCategory = _a.sent();
-                return [2 /*return*/, newCategory];
-        }
+const categoryModel_1 = __importDefault(require("../models/categoryModel"));
+const createError_1 = __importDefault(require("../utils/createError"));
+const responseMessage_1 = require("../utils/responseMessage");
+const validateId_1 = __importDefault(require("../validation/validateId"));
+const createCategory = (name, image) => __awaiter(void 0, void 0, void 0, function* () {
+    const newCategory = yield categoryModel_1.default.create({ name, image });
+    return newCategory;
+});
+const getAllCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+    const categories = yield categoryModel_1.default.find();
+    return categories;
+});
+const updateCategoryById = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, validateId_1.default)(id);
+    const findCategory = yield categoryModel_1.default.findById(id);
+    if (!findCategory) {
+        throw (0, createError_1.default)(500, responseMessage_1.categoryErr.ERR_2);
+    }
+    const updateCategory = yield categoryModel_1.default.findByIdAndUpdate(id, data, {
+        new: true,
     });
-}); };
-var getAllCategory = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var categories;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, categoryModel_1.default.find()];
-            case 1:
-                categories = _a.sent();
-                return [2 /*return*/, categories];
-        }
-    });
-}); };
-var updateCategoryById = function (id, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var findCategory, updateCategory;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, validateId_1.default)(id)];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, categoryModel_1.default.findById(id)];
-            case 2:
-                findCategory = _a.sent();
-                if (!findCategory) {
-                    throw (0, createError_1.default)(500, responseMessage_1.categoryErr.ERR_2);
-                }
-                if (!data.parentCategory) return [3 /*break*/, 4];
-                return [4 /*yield*/, (0, validateId_1.default)(data.parentCategory)];
-            case 3:
-                _a.sent();
-                _a.label = 4;
-            case 4: return [4 /*yield*/, categoryModel_1.default.findByIdAndUpdate(id, data, {
-                    new: true,
-                })];
-            case 5:
-                updateCategory = _a.sent();
-                return [2 /*return*/, updateCategory];
-        }
-    });
-}); };
-var deleteCategoryById = function (id) { return __awaiter(void 0, void 0, void 0, function () {
-    var findCategory;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, validateId_1.default)(id)];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, categoryModel_1.default.findById(id)];
-            case 2:
-                findCategory = _a.sent();
-                if (!findCategory) {
-                    throw (0, createError_1.default)(400, responseMessage_1.categorySuc.SUC_4);
-                }
-                return [4 /*yield*/, categoryModel_1.default.findByIdAndDelete(id)];
-            case 3:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-var categoryService = {
-    createCategory: createCategory,
-    deleteCategoryById: deleteCategoryById,
-    updateCategoryById: updateCategoryById,
-    getAllCategory: getAllCategory,
+    return updateCategory;
+});
+const deleteCategoryById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, validateId_1.default)(id);
+    const findCategory = yield categoryModel_1.default.findById(id);
+    if (!findCategory) {
+        throw (0, createError_1.default)(400, responseMessage_1.categorySuc.SUC_4);
+    }
+    yield categoryModel_1.default.findByIdAndDelete(id);
+    return;
+});
+const categoryService = {
+    createCategory,
+    deleteCategoryById,
+    updateCategoryById,
+    getAllCategory,
 };
 exports.default = categoryService;

@@ -1,17 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userErr = exports.userSuc = exports.brandErr = exports.brandSuc = exports.categoryErr = exports.categorySuc = exports.productErr = exports.productSuc = exports.authSuc = exports.authError = void 0;
+exports.cartErr = exports.cartSuc = exports.couponErr = exports.couponSuc = exports.orderErr = exports.orderSuc = exports.userErr = exports.userSuc = exports.brandErr = exports.brandSuc = exports.categoryErr = exports.categorySuc = exports.productErr = exports.productSuc = exports.authSuc = exports.authError = void 0;
 exports.authError = {
     ERR_1: "USERNAME NOT FOUND",
     ERR_2: "INCORRECT PASSWORD",
     ERR_3: "NO REFRESH TOKEN IN COOKIE",
     ERR_4: "NO REFRESH TOKEN PRESENT IN DB OR NOT MATCHED",
     ERR_5: "THERE IS SOMETHING WRONG WITH REFESH TOKEN",
+    ERR_6: "TOKEN IS NOT MATCHED",
+    ERR_7: "INVALID LINK!",
 };
 exports.authSuc = {
     SUC_1: "ACCOUNT SUCCESSFULLY CREATED",
     SUC_2: "LOGGED IN SUCCESSFULLY",
     SUC_3: "GET ACCESSTOKEN SUCCESSFULLY",
+    SUC_4: "PASSWORD SUCCESSFULLY CHANGED",
+    SUC_5: "CHECK TOKEN VERIFY SUCCESSFULLY",
+    SUC_6: "CHECK TOKEN RESET PASSWORD SUCCESSFULLY",
 };
 exports.productSuc = {
     SUC_1: "PRODUCT SUCCESSFULLY CREATED",
@@ -60,4 +65,49 @@ exports.userErr = {
     ERR_3: "GET USER BY ID FAILED",
     ERR_4: "UPDATE USER BY ID FAILTED",
     ERR_5: "DELETE USER BY ID FAILTED",
+};
+exports.orderSuc = {
+    SUC_1: "ORDER SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL ORDER SUCCESSFULLY",
+    SUC_3: "GET ORDER BY ID SUCCESSFULLY",
+    SUC_4: " ORDER BY ID SUCCESSFULLY UPDATED",
+    SUC_5: "ORDER BY ID SUCCESSFULLY DELETED",
+};
+exports.orderErr = {
+    ERR_1: "CREATE ORDER FAILED",
+    ERR_2: "GET ALL ORDER FAILED",
+    ERR_3: "GET ORDER BY ID FAILED",
+    ERR_4: "UPDATE ORDER BY ID FAILTED",
+    ERR_5: "DELETE ORDER BY ID FAILTED",
+};
+exports.couponSuc = {
+    SUC_1: "COUPON SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL COUPON SUCCESSFULLY",
+    SUC_3: "GET COUPON BY ID SUCCESSFULLY",
+    SUC_4: " COUPON BY ID SUCCESSFULLY UPDATED",
+    SUC_5: "COUPON BY ID SUCCESSFULLY DELETED",
+};
+exports.couponErr = {
+    ERR_1: "CREATE COUPON FAILED",
+    ERR_2: "GET ALL COUPON FAILED",
+    ERR_3: "GET COUPON BY ID FAILED",
+    ERR_4: "UPDATE COUPON BY ID FAILTED",
+    ERR_5: "DELETE COUPON BY ID FAILTED",
+    ERR_6: "COUPON NOT FOUND",
+};
+exports.cartSuc = {
+    SUC_1: "CART SUCCESSFULLY CREATED",
+    SUC_2: "GET ALL CART SUCCESSFULLY",
+    SUC_3: "GET CART BY ID SUCCESSFULLY",
+    SUC_4: " CART BY ID SUCCESSFULLY UPDATED",
+    SUC_5: "CART BY ID SUCCESSFULLY DELETED",
+    SUC_6: "SUCCESSFULLY APPLIED COUPON",
+};
+exports.cartErr = {
+    ERR_1: "CREATE CART FAILED",
+    ERR_2: "GET ALL CART FAILED",
+    ERR_3: "GET CART BY ID FAILED",
+    ERR_4: "UPDATE CART BY ID FAILTED",
+    ERR_5: "DELETE CART BY ID FAILTED",
+    ERR_6: "CART NOT FOUND",
 };

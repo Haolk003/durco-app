@@ -2,18 +2,9 @@ import categoryModel from "../models/categoryModel";
 import createError from "../utils/createError";
 import { categorySuc, categoryErr } from "../utils/responseMessage";
 import validateMongoId from "../validation/validateId";
-const createCategory = async (name: string, parentCategory?: string) => {
-  if (parentCategory) {
-    const findCategory = await categoryModel.findById(parentCategory);
-    if (!findCategory) {
-      throw createError(400, categoryErr.ERR_2);
-    }
-    const newCategory = await categoryModel.create({ name, parentCategory });
-    return newCategory;
-  } else {
-    const newCategory = await categoryModel.create({ name });
-    return newCategory;
-  }
+const createCategory = async (name: string, image: string) => {
+  const newCategory = await categoryModel.create({ name, image });
+  return newCategory;
 };
 const getAllCategory = async () => {
   const categories = await categoryModel.find();
@@ -21,16 +12,13 @@ const getAllCategory = async () => {
 };
 interface updateCategoryData {
   name: string;
-  parentCategory?: string;
+  image: string;
 }
 const updateCategoryById = async (id: string, data: updateCategoryData) => {
   await validateMongoId(id);
   const findCategory = await categoryModel.findById(id);
   if (!findCategory) {
     throw createError(500, categoryErr.ERR_2);
-  }
-  if (data.parentCategory) {
-    await validateMongoId(data.parentCategory);
   }
 
   const updateCategory = await categoryModel.findByIdAndUpdate(id, data, {

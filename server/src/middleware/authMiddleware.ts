@@ -53,6 +53,7 @@ export const verifyToken = async (
       }
     );
   } catch (err) {
+    res.status(401).json({ tokenExpries: true });
     next(err);
   }
 };

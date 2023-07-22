@@ -5,3 +5,5 @@ export { default as ProductSpecial } from "./productsSpecialHome";
 export { default as ProductItem } from "./productItem/productItem";
 export { default as Footer } from "./footer/footer";
 export { default as Letter } from "./newsletter/letter";
+export { default as Layout } from "./layout/layout";
+export { default as ButtonProps } from "./ui/buttonProps";

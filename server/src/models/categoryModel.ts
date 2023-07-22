@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 interface categoryModelType {
   name: string;
-  parentCategory: mongoose.Schema.Types.ObjectId;
+  image: string;
 }
 const categoryModel = new mongoose.Schema<categoryModelType>({
   name: { type: String, required: true },
-  parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+  image: { type: String, required: true },
 });
 export default mongoose.model("Category", categoryModel);

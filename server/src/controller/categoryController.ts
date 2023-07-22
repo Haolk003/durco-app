@@ -6,9 +6,9 @@ const createCategory = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, parentCategory } = req.body;
+  const { name, image } = req.body;
   try {
-    const category = await categoryService.createCategory(name, parentCategory);
+    const category = await categoryService.createCategory(name, image);
     res
       .status(200)
       .json({ status: 200, data: category, message: categorySuc.SUC_1 });

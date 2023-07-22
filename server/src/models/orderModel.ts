@@ -12,7 +12,6 @@ interface paymentIntentType {
   created: Date;
   id: string;
   paymentMethod: string;
-  cardLast4: number;
 }
 interface orderModelType {
   products: Product[];
@@ -23,6 +22,7 @@ interface orderModelType {
   phone: string;
   type: string;
   paymentMethod: string;
+  amount: number;
 }
 const OrderModel = new mongoose.Schema<orderModelType>(
   {
@@ -45,6 +45,10 @@ const OrderModel = new mongoose.Schema<orderModelType>(
     paymentMethod: {
       type: String,
       enum: ["card", "cash"],
+    },
+    amount: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true }

@@ -15,6 +15,7 @@ module.exports = {
         "tool-product-bg": "rgb(240,240,240)",
         "text-footer-color": "rgb(170,170,170)",
         "border-footer-color": "rgb(24,24,24)",
+        "register-left-bg": "#464471",
       },
     },
   },

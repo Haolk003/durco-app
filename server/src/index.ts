@@ -6,7 +6,6 @@ import database from "./config/database";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import createError from "http-errors";
-
 import errMiddleware from "./middleware/errMiddleware";
 import authRouter from "./router/authRouter";
 import productRouter from "./router/productRouter";
@@ -15,9 +14,11 @@ import brandRouter from "./router/brandRouter";
 import userRouter from "./router/userRouter";
 import couponRouter from "./router/couponRouter";
 import cartRouter from "./router/cartRouter";
+
+import "./config/passport";
 const app = express();
 dotenv.config();
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: [`${process.env.FONTEND_HOST}`] }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(logger("dev"));
@@ -36,6 +37,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 // error handler
+
 app.use(errMiddleware);
 
 app.listen(process.env.PORT || 5000, () => {

@@ -1,17 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import userService from "../service/authService";
 import { authSuc } from "../utils/responseMessage";
-import cookie from "cookie";
 export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { password, email, userName } = req.body;
+  const data = req.body;
   try {
-    const user = await userService.register({ password, email, userName });
+    const user = await userService.register(data);
     res.status(200).json({ status: 200, data: user, message: authSuc.SUC_1 });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -25,6 +25,7 @@ export const login = async (
     const user = await userService.login({ userName, password }, res);
     res.status(200).json({ status: 200, data: user, message: authSuc.SUC_2 });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -78,7 +79,45 @@ export const checkTokenVefifyAccount = async (
   const { id, token } = req.params;
   try {
     const user = await userService.checkTokenVerifyEmail(id, token);
-    res.status(200).json({ status: 200, data: user, message: authSuc.SUC_5 });
+    res.status(200).json({ status: 200, data: user, message: authSuc.SUC_2 });
+  } catch (err) {
+    next(err);
+  }
+};
+export const profileUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.status(200).json({ status: 200, data: req.user, message: authSuc });
+  } catch (err) {
+    next(err);
+  }
+};
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.clearCookie("refeshToken", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.status(200).json({ status: 200, message: "You have been sign out" });
+};
+export const googleCallBack = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await userService.loginGoogleCallback(res, req.user._id);
+    res.redirect(`${process.env.FONTEND_HOST}`);
   } catch (err) {
     next(err);
   }

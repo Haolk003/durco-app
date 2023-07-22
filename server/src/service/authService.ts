@@ -1,4 +1,5 @@
 import cookie from "cookie";
+import passport from "passport";
 import CryptoJS from "crypto-js";
 
 import userModel from "../models/userModel";
@@ -18,6 +19,8 @@ interface registerProps {
   password: string;
   email: string;
   userName: string;
+  firstName: string;
+  lastName: string;
 }
 interface loginProps {
   userName: string;
@@ -147,6 +150,27 @@ const checkTokenVerifyEmail = async (userId: string, token: string) => {
   await tokenModel.deleteOne({ _id: findToken._id });
   return updateUser;
 };
+const loginGoogleCallback = async (res: Response, userId: string) => {
+  const findUser = await userModel.findById(userId);
+  if (!findUser) {
+    throw createError(400, authError.ERR_6);
+  }
+  const { accessToken, refeshToken } = createJwt(userId, findUser.role);
+  const updateUser = userModel.findByIdAndUpdate(
+    userId,
+    { $set: { refeshToken: refeshToken } },
+    { set: true }
+  );
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    maxAge: Date.now() + 60 * 60,
+  });
+  res.cookie("refeshToken", refeshToken, {
+    httpOnly: true,
+    maxAge: Date.now(),
+  });
+  return;
+};
 
 const userService = {
   register,
@@ -154,7 +178,7 @@ const userService = {
   handleRefeshToken,
   forgotPassword,
   resetPassword,
-
   checkTokenVerifyEmail,
+  loginGoogleCallback,
 };
 export default userService;

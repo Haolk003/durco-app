@@ -2,6 +2,7 @@ import { NextFunction } from "express";
 import mongoose, { Model } from "mongoose";
 import CryptoJS from "crypto-js";
 interface userSchemaType {
+  googleId: string;
   userName: string;
   email: string;
   password: string;
@@ -21,16 +22,16 @@ const userSchema = new mongoose.Schema<userSchemaType, userModel, userMethod>(
     userName: {
       type: String,
       required: true,
-      unique: true,
     },
     email: {
       type: String,
       required: true,
-      unique: true,
     },
     password: {
       type: String,
-      required: true,
+    },
+    googleId: {
+      type: String,
     },
     firstName: {
       type: String,
