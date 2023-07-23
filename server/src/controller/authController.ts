@@ -90,7 +90,8 @@ export const profileUser = async (
   next: NextFunction
 ) => {
   try {
-    res.status(200).json({ status: 200, data: req.user, message: authSuc });
+    const user = await userService.userProfile(req.user._id);
+    res.status(200).json({ status: 200, data: user, message: authSuc.SUC_7 });
   } catch (err) {
     next(err);
   }
@@ -100,15 +101,19 @@ export const logout = async (
   res: Response,
   next: NextFunction
 ) => {
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    secure: true,
-  });
-  res.clearCookie("refeshToken", {
-    httpOnly: true,
-    secure: true,
-  });
-  res.status(200).json({ status: 200, message: "You have been sign out" });
+  try {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+    });
+    res.clearCookie("refeshToken", {
+      httpOnly: true,
+      secure: true,
+    });
+    res.status(200).json({ status: 200, message: "You have been sign out" });
+  } catch (err) {
+    next(err);
+  }
 };
 export const googleCallBack = async (
   req: Request,

@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { isEmpty } from "lodash";
-import jwt, { VerifyErrors, JwtPayload, VerifyOptions } from "jsonwebtoken";
+import jwt, {
+  VerifyErrors,
+  JwtPayload,
+  VerifyOptions,
+  TokenExpiredError,
+} from "jsonwebtoken";
 import userModel from "../models/userModel";
 import createError from "../utils/createError";
 
@@ -32,29 +37,27 @@ export const verifyToken = async (
     if (isEmpty(token)) {
       throw createError(401, "Not author token expried,Please login again");
     }
-    jwt.verify(
-      token,
-      `${process.env.JWT_KEY}`,
-      options,
-      async (err: VerifyErrors | null, decoded: any) => {
-        if (err) {
-          throw createError(401, "Failed to retrieve user information");
-        }
-        const user = decoded as userToken;
-        const findUser = await userModel.findOne({
-          _id: user._id,
-          role: user.role,
-        });
-        if (!findUser) {
-          throw createError(401, "Failed to retrieve user information");
-        }
-        req.user = user;
-        next();
-      }
-    );
+    const userVerify = jwt.verify(token, `${process.env.JWT_KEY}`, options);
+
+    // if (err) {
+    //   if (err instanceof TokenExpiredError) {
+    //     throw createError(401, "Token has expired");
+    //   } else {
+    //     throw createError(401, "Failed to retrieve user information");
+    //   }
+    // }
+    const user = userVerify as userToken;
+    const findUser = await userModel.findOne({
+      _id: user._id,
+      role: user.role,
+    });
+    if (!findUser) {
+      throw createError(401, "Failed to retrieve user information");
+    }
+    req.user = user;
+    next();
   } catch (err) {
-    res.status(401).json({ tokenExpries: true });
-    next(err);
+    return next(err);
   }
 };
 export const verifyUser = async (

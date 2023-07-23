@@ -6,6 +6,7 @@ const errMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(err);
   const errStatus = err.status || 500;
   const errMessage = err.message || "something went wrong";
   return res.status(errStatus).json({

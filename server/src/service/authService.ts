@@ -71,11 +71,13 @@ const login = async (data: loginProps, res: Response) => {
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    maxAge: Date.now() + 60 * 60,
+    secure: true,
+    expires: new Date(Date.now() + 1 * 3600000),
   });
   res.cookie("refeshToken", refeshToken, {
     httpOnly: true,
-    maxAge: Date.now(),
+    secure: true,
+    expires: new Date(Date.now() + 720 * 3600000),
   });
 
   return updateRefeshToken;
@@ -91,7 +93,11 @@ const handleRefeshToken = async (
   if (!findUser) throw createError(400, authError.ERR_4);
   const user = await checkToken(refeshToken);
   const { accessToken } = createJwt(findUser._id.toString(), findUser.role);
-  res.setHeader("Set-Cookie", cookie.serialize("access-token", accessToken));
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(Date.now() + 1 * 3600000),
+  });
   return;
 };
 const forgotPassword = async (email: string) => {
@@ -156,22 +162,30 @@ const loginGoogleCallback = async (res: Response, userId: string) => {
     throw createError(400, authError.ERR_6);
   }
   const { accessToken, refeshToken } = createJwt(userId, findUser.role);
-  const updateUser = userModel.findByIdAndUpdate(
+  const updateUser = await userModel.findByIdAndUpdate(
     userId,
-    { $set: { refeshToken: refeshToken } },
+    { $set: { refeshToken: refeshToken, verify: true } },
     { set: true }
   );
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    maxAge: Date.now() + 60 * 60,
+    secure: true,
+    expires: new Date(Date.now() + 1 * 3600000),
   });
   res.cookie("refeshToken", refeshToken, {
     httpOnly: true,
-    maxAge: Date.now(),
+    secure: true,
+    expires: new Date(Date.now() + 720 * 3600000),
   });
   return;
 };
-
+const userProfile = async (userId: string) => {
+  validateMongoId(userId);
+  const getProfile = await userModel
+    .findById(userId)
+    .select("-password -googleId -role");
+  return getProfile;
+};
 const userService = {
   register,
   login,
@@ -180,5 +194,6 @@ const userService = {
   resetPassword,
   checkTokenVerifyEmail,
   loginGoogleCallback,
+  userProfile,
 };
 export default userService;

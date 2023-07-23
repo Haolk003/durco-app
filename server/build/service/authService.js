@@ -120,6 +120,30 @@ const checkTokenVerifyEmail = (userId, token) => __awaiter(void 0, void 0, void 
     yield tokenModel_1.default.deleteOne({ _id: findToken._id });
     return updateUser;
 });
+const loginGoogleCallback = (res, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const findUser = yield userModel_1.default.findById(userId);
+    if (!findUser) {
+        throw (0, createError_1.default)(400, responseMessage_1.authError.ERR_6);
+    }
+    const { accessToken, refeshToken } = (0, createToken_1.default)(userId, findUser.role);
+    const updateUser = userModel_1.default.findByIdAndUpdate(userId, { $set: { refeshToken: refeshToken } }, { set: true });
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        maxAge: Date.now() + 60 * 60,
+    });
+    res.cookie("refeshToken", refeshToken, {
+        httpOnly: true,
+        maxAge: Date.now(),
+    });
+    return;
+});
+const userProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, validateId_1.default)(userId);
+    const getProfile = yield userModel_1.default
+        .findById(userId)
+        .select("-password -googleId -role");
+    return getProfile;
+});
 const userService = {
     register,
     login,
@@ -127,5 +151,7 @@ const userService = {
     forgotPassword,
     resetPassword,
     checkTokenVerifyEmail,
+    loginGoogleCallback,
+    userProfile,
 };
 exports.default = userService;

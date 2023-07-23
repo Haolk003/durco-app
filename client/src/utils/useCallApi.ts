@@ -10,9 +10,12 @@ const customFetch = axios.create({
 customFetch.interceptors.response.use(
   (response: AxiosResponse<any>) => response,
   async (error: AxiosError<any>) => {
-    if (error?.response?.data.tokenExpires === true) {
+    if (
+      error?.response?.data.message ===
+      "Not author token expried,Please login again"
+    ) {
       try {
-        const response = await customFetch.get<any, AxiosResponse<any, any>>(
+        const response = await customFetch.post<any, AxiosResponse<any, any>>(
           "/auth/refesh"
         );
         const newToken = response?.headers["set-cookie"]?.find((cookie) =>

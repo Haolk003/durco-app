@@ -20,7 +20,7 @@ router.post("/refesh", refeshToken);
 router.post("/reset-password/:userId/:token", resetPassword);
 router.post("/verify-email/:id/:token", checkTokenVefifyAccount);
 router.post("/logout", verifyToken, logout);
-router.get("/profile-user", profileUser);
+router.get("/profile-user", verifyToken, profileUser);
 router.get(
   "/google/callback",
   passport.authenticate("google", {

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.profileUser = exports.checkTokenVefifyAccount = exports.resetPassword = exports.forgotPassword = exports.refeshToken = exports.login = exports.register = void 0;
+exports.googleCallBack = exports.logout = exports.profileUser = exports.checkTokenVefifyAccount = exports.resetPassword = exports.forgotPassword = exports.refeshToken = exports.login = exports.register = void 0;
 const authService_1 = __importDefault(require("../service/authService"));
 const responseMessage_1 = require("../utils/responseMessage");
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -88,7 +88,8 @@ const checkTokenVefifyAccount = (req, res, next) => __awaiter(void 0, void 0, vo
 exports.checkTokenVefifyAccount = checkTokenVefifyAccount;
 const profileUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        res.status(200).json({ status: 200, data: req.user, message: responseMessage_1.authSuc });
+        const user = yield authService_1.default.userProfile(req.user._id);
+        res.status(200).json({ status: 200, data: user, message: responseMessage_1.authSuc.SUC_7 });
     }
     catch (err) {
         next(err);
@@ -107,3 +108,13 @@ const logout = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     res.status(200).json({ status: 200, message: "You have been sign out" });
 });
 exports.logout = logout;
+const googleCallBack = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield authService_1.default.loginGoogleCallback(res, req.user._id);
+        res.redirect(`${process.env.FONTEND_HOST}`);
+    }
+    catch (err) {
+        next(err);
+    }
+});
+exports.googleCallBack = googleCallBack;

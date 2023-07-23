@@ -18,16 +18,20 @@ const userSchema = new mongoose_1.default.Schema({
     userName: {
         type: String,
         required: true,
-        unique: true,
+    },
+    avatar: {
+        type: String,
+        default: "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
     },
     email: {
         type: String,
         required: true,
-        unique: true,
     },
     password: {
         type: String,
-        required: true,
+    },
+    googleId: {
+        type: String,
     },
     firstName: {
         type: String,
@@ -46,6 +50,12 @@ const userSchema = new mongoose_1.default.Schema({
         type: String,
         enum: ["admin", "user"],
         default: "user",
+    },
+    gender: {
+        type: String,
+    },
+    birth: {
+        type: Date,
     },
 }, { timestamps: true });
 userSchema.pre("save", function (next) {

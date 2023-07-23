@@ -7,6 +7,7 @@ interface userInfoType {
   userName: string;
   firstName: string;
   lastName: string;
+  avatar: string;
 }
 interface initialStateType {
   userInfo: userInfoType | null;
@@ -14,6 +15,7 @@ interface initialStateType {
   isError: boolean;
   isSuccess: boolean;
   message: any;
+  isLogin: boolean;
 }
 const initialState: initialStateType = {
   userInfo: null,
@@ -21,6 +23,7 @@ const initialState: initialStateType = {
   isError: false,
   isSuccess: false,
   message: "",
+  isLogin: false,
 };
 type loginTypes = {
   userName: string;
@@ -114,7 +117,7 @@ export const verifyEmail = createAsyncThunk(
 );
 export const getProfileUser = createAsyncThunk(
   "auth/getProfileUser",
-  async (_: any, { rejectWithValue }) => {
+  async (_arg: any, { rejectWithValue }) => {
     try {
       const resposne = await authService.getProfileUser();
       return resposne;
@@ -128,6 +131,8 @@ export const logout = createAsyncThunk(
   "auth/logout",
   async (_: any, { rejectWithValue }) => {
     try {
+      const response = await authService.logout();
+      return response;
     } catch (err) {
       const axiosError = err as MyAxiosError;
       return rejectWithValue(axiosError?.response?.data?.message);
@@ -144,16 +149,19 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.isLogin = false;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.userInfo = action.payload?.data;
+        state.isLogin = true;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+        state.isLogin = false;
       });
     builder
       .addCase(register.pending, (state) => {
@@ -176,7 +184,7 @@ const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = false;
       })
-      .addCase(verifyEmail.fulfilled, (state, action) => {
+      .addCase(verifyEmail.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
@@ -191,7 +199,7 @@ const authSlice = createSlice({
         state.isSuccess = false;
         state.isError = false;
       })
-      .addCase(forgotPassword.fulfilled, (state, action) => {
+      .addCase(forgotPassword.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
       })
@@ -220,10 +228,12 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.isSuccess = false;
         state.isError = false;
+        state.isLogin = false;
       })
       .addCase(getProfileUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.isLogin = true;
         state.userInfo = action.payload.data;
       })
       .addCase(getProfileUser.rejected, (state, action) => {

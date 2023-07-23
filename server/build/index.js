@@ -18,6 +18,7 @@ const brandRouter_1 = __importDefault(require("./router/brandRouter"));
 const userRouter_1 = __importDefault(require("./router/userRouter"));
 const couponRouter_1 = __importDefault(require("./router/couponRouter"));
 const cartRouter_1 = __importDefault(require("./router/cartRouter"));
+require("./config/passport");
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use((0, cors_1.default)({ credentials: true, origin: [`${process.env.FONTEND_HOST}`] }));

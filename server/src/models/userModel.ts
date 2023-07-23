@@ -11,6 +11,9 @@ interface userSchemaType {
   verify: boolean;
   refeshToken: string;
   role: string;
+  avatar: string;
+  birth: Date;
+  gender: string;
 }
 //TODO: declare mongoose method & model
 interface userMethod {
@@ -22,6 +25,11 @@ const userSchema = new mongoose.Schema<userSchemaType, userModel, userMethod>(
     userName: {
       type: String,
       required: true,
+    },
+    avatar: {
+      type: String,
+      default:
+        "https://static2.yan.vn/YanNews/2167221/202102/facebook-cap-nhat-avatar-doi-voi-tai-khoan-khong-su-dung-anh-dai-dien-e4abd14d.jpg",
     },
     email: {
       type: String,
@@ -50,6 +58,12 @@ const userSchema = new mongoose.Schema<userSchemaType, userModel, userMethod>(
       type: String,
       enum: ["admin", "user"],
       default: "user",
+    },
+    gender: {
+      type: String,
+    },
+    birth: {
+      type: Date,
     },
   },
   { timestamps: true }
