@@ -7,3 +7,7 @@ export { default as Footer } from "./footer/footer";
 export { default as Letter } from "./newsletter/letter";
 export { default as Layout } from "./layout/layout";
 export { default as ButtonProps } from "./ui/button/buttonProps";
+export { default as MenuAvatar } from "./ui/menu/menuAvatar";
+export { default as MenuCategory } from "./ui/menu/menuCategories";
+export { default as PopoverPassword } from "./ui/popover/popoverPassword";
+export { default as LoadingBackDrop } from "./ui/loading/loadingBackdrop";

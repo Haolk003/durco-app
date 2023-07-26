@@ -14,7 +14,7 @@ import checkToken from "../utils/checkToken";
 import sendEmail from "../utils/sendEmail";
 import { snakeCase } from "lodash";
 import validateMongoId from "../validation/validateId";
-
+import validatePassword from "../validation/validatePassword";
 interface registerProps {
   password: string;
   email: string;
@@ -28,11 +28,21 @@ interface loginProps {
 }
 
 const register = async (data: registerProps) => {
-  const checkUser = await userModel.findOne({ userName: data.userName });
+  if (!validatePassword(data.password)) {
+    throw createError(400, "Password not valid");
+  }
+
+  const checkUser = await userModel.findOne({
+    userName: data.userName,
+    googleId: null,
+  });
   if (checkUser) {
     throw createError(401, "username already exists");
   }
-  const checkEmail = await userModel.findOne({ email: data.email });
+  const checkEmail = await userModel.findOne({
+    email: data.email,
+    googleId: null,
+  });
   if (checkEmail) {
     throw createError(401, "Email already exists");
   }
@@ -41,7 +51,7 @@ const register = async (data: registerProps) => {
     token: CryptoJS.lib.WordArray.random(64).toString(),
     userId: newUser._id,
   });
-  const url = `${process.env.FRONTEND_HOST}/auth/verified/${newUser._id}/${newToken.token}`;
+  const url = `${process.env.FRONTEND_HOST}/account/isVerify?userId=${newUser._id}&token=${newToken.token}`;
   await sendEmail({
     to: newUser.email,
     content: url,
@@ -54,7 +64,9 @@ const login = async (data: loginProps, res: Response) => {
   if (!user) {
     throw createError(400, authError.ERR_1);
   }
-
+  if (!user.verify) {
+    throw createError(400, authError.ERR_8);
+  }
   if (!user.isPasswordMatched(data.password)) {
     throw createError(400, authError.ERR_2);
   }
@@ -117,7 +129,7 @@ const forgotPassword = async (email: string) => {
   await sendEmail({
     to: email,
     subject: "Test",
-    content: `${checkEmail._id}/${token.token}`,
+    content: `${process.env.FRONTEND_HOST}/account/reset-password?userId=${checkEmail._id}&token=${token.token}`,
   });
   return;
 };
@@ -130,11 +142,19 @@ const resetPassword = async (
   if (!checkToken) {
     throw createError(401, authError.ERR_6);
   }
-  const updatePassword = await tokenModel.findByIdAndUpdate(
+  const updatePassword = await userModel.findByIdAndUpdate(
     userId,
-    { password: newPassword },
+    {
+      password: CryptoJS.AES.encrypt(
+        `${newPassword}`,
+        `${process.env.CRYPTO_KEY}`
+      ).toString(),
+    },
     { new: true }
   );
+  if (!updatePassword) {
+    throw createError(401, authError.ERR_9);
+  }
   await tokenModel.deleteOne({ _id: checkToken._id });
   return updatePassword;
 };
@@ -152,7 +172,7 @@ const checkTokenVerifyEmail = async (userId: string, token: string) => {
   if (!updateUser) {
     throw createError(400, authError.ERR_7);
   }
-  await cartModel.create({ orderBy: userId });
+  await cartModel.create({ createdBy: userId });
   await tokenModel.deleteOne({ _id: findToken._id });
   return updateUser;
 };
@@ -177,6 +197,10 @@ const loginGoogleCallback = async (res: Response, userId: string) => {
     secure: true,
     expires: new Date(Date.now() + 720 * 3600000),
   });
+  const findCart = await cartModel.findOne({ createdBy: userId });
+  if (!findCart) {
+    await cartModel.create({ createdBy: userId });
+  }
   return;
 };
 const userProfile = async (userId: string) => {

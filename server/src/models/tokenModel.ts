@@ -18,7 +18,7 @@ const tokenSchema = new mongoose.Schema<tokenSchemaType>({
   createdAt: {
     type: Date,
     default: new Date(),
-    expires: 3600,
+    expires: 3600 * 24,
   },
 });
 export default mongoose.model("Token", tokenSchema);

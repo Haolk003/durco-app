@@ -2,7 +2,15 @@ import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 
-import { Home, Login, Regiter } from "./pages";
+import {
+  Home,
+  Login,
+  Regiter,
+  VerifyEmail,
+  CheckVerify,
+  ForgotPassword,
+  ResetPassword,
+} from "./pages";
 import { Layout } from "./components";
 
 import "./App.css";
@@ -19,6 +27,10 @@ function App() {
 
           <Route path="/register" element={<Regiter />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/account/verify" element={<VerifyEmail />} />
+          <Route path="/account/isVerify" element={<CheckVerify />} />
+          <Route path="/account/forgot-password" element={<ForgotPassword />} />
+          <Route path="/account/reset-password" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
       {/* <Letter />

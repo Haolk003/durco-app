@@ -1,6 +1,7 @@
 import { NextFunction } from "express";
 import mongoose, { Model } from "mongoose";
 import CryptoJS from "crypto-js";
+import Joi from "joi";
 interface userSchemaType {
   googleId: string;
   userName: string;
@@ -87,7 +88,7 @@ userSchema.method(
       `${process.env.CRYPTO_KEY}`
     ).toString(CryptoJS.enc.Utf8);
 
-    if (hashedPassword === enterPassword.toString()) {
+    if (hashedPassword === enterPassword) {
       return true;
     }
     return false;

@@ -16,6 +16,7 @@ module.exports = {
         "text-footer-color": "rgb(170,170,170)",
         "border-footer-color": "rgb(24,24,24)",
         "register-left-bg": "#464471",
+        "resend-verify_email-color": "rgb(1,107,248)",
       },
     },
   },

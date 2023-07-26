@@ -24,6 +24,7 @@ const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const { message, isSuccess, isError } = useAppSelector((state) => state.auth);
   const [request, setRequest] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(false);
   const formik = useFormik<MyFormValue>({
     initialValues: {
       userName: "",
@@ -42,9 +43,10 @@ const Login: React.FC = () => {
     console.log(message);
   }, [message]);
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && requestSuccess) {
       showToastSuccess("Account successfully created");
     }
+    setRequest(true);
   }, [isSuccess]);
   useEffect(() => {
     if (isError && request) {
@@ -69,9 +71,12 @@ const Login: React.FC = () => {
                 <h2 className="text-primary tracking-wider text-[14px]">
                   ADREADY MEMBERS
                 </h2>
-                <button className="text-register-left-bg flex items-center gap-2">
+                <Link
+                  to="/register"
+                  className="text-register-left-bg flex items-center gap-2"
+                >
                   <AiOutlineUser /> <span>Sign Up</span>
-                </button>
+                </Link>
               </div>
               <div className="px-3 py-4 w-full">
                 <form
@@ -116,9 +121,12 @@ const Login: React.FC = () => {
                       {formik.touched.password && formik.errors.password}
                     </span>
                   </div>
-                  <span className="text-center text-text-footer-color cursor-pointer font-[300] ">
+                  <Link
+                    to="/account/forgot-password"
+                    className="text-center text-text-footer-color cursor-pointer font-[300] "
+                  >
                     Forgot password?
-                  </span>
+                  </Link>
                   <ButtonProps
                     type="submit"
                     variant="contained"

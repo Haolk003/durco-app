@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getAllCategory } from "../../features/category/categorySlice";
 import Logo from "../../assets/logo.png";
 import { getProfileUser } from "../../features/auth/authSlice";
-import { MenuAvatar, MenuCategory } from "../ui";
+import { MenuAvatar, MenuCategory } from "../";
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const userInfo = useAppSelector((state) => state.auth.userInfo);

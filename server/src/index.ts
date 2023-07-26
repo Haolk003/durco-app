@@ -14,11 +14,11 @@ import brandRouter from "./router/brandRouter";
 import userRouter from "./router/userRouter";
 import couponRouter from "./router/couponRouter";
 import cartRouter from "./router/cartRouter";
-
+import colorRouter from "./router/colorRouter";
 import "./config/passport";
 const app = express();
 dotenv.config();
-app.use(cors({ credentials: true, origin: [`${process.env.FONTEND_HOST}`] }));
+app.use(cors({ credentials: true, origin: [`${process.env.FRONTEND_HOST}`] }));
 app.use(cookieParser());
 app.use(express.json());
 app.use(logger("dev"));
@@ -32,6 +32,7 @@ app.use("/api/brand", brandRouter);
 app.use("/api/user", userRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/color", colorRouter);
 //TODO: catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));

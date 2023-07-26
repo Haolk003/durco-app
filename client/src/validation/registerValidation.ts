@@ -12,7 +12,10 @@ export const validateSchema = object().shape({
   email: string().email("Email not valid").required("Email is required"),
   password: string()
     .required("Password is required")
-    .min(8, "Password must be at least 8 characters"),
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[a-z]/, "Password must be at least 1 lower case letter")
+    .matches(/[A-Z]/, "Password must be at least 1 upper case letter")
+    .matches(/[0-9]/, "Password must be at least 1 number"),
   userName: string()
     .matches(
       /^[a-zA-Z0-9]+$/,

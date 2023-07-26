@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 import { TextField } from "@mui/material";
@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import registerImage from "../assets/login-image.png";
 import { validateSchema } from "../validation/registerValidation";
 import { register } from "../features/auth/authSlice";
-import { ButtonProps } from "../components";
+import { ButtonProps, PopoverPassword, LoadingBackDrop } from "../components";
 import { showToastError, showToastSuccess } from "../utils/toast";
 
 interface MyFormValue {
@@ -24,9 +24,15 @@ interface MyFormValue {
 }
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { message, isSuccess, isError } = useAppSelector((state) => state.auth);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { message, isSuccess, isError, isLoading } = useAppSelector(
+    (state) => state.auth
+  );
   const [request, setRequest] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(false);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const formik = useFormik<MyFormValue>({
     initialValues: {
       email: "",
@@ -36,18 +42,22 @@ const Register: React.FC = () => {
       userName: "",
     },
     validationSchema: validateSchema,
-    onSubmit(values, formikHelpers) {
-      console.log(values);
+    onSubmit(values) {
       dispatch(register(values));
     },
   });
+  const handleFocus = () => {
+    setIsPopoverOpen(true);
+  };
+  const handleBlur = () => {
+    setIsPopoverOpen(false);
+  };
   useEffect(() => {
-    console.log(message);
-  }, [message]);
-  useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && requestSuccess) {
       showToastSuccess("Account successfully created");
+      navigate(`/account/verify?email=${formik.values.email}`);
     }
+    setRequestSuccess(true);
   }, [isSuccess]);
   useEffect(() => {
     if (isError && request) {
@@ -72,9 +82,12 @@ const Register: React.FC = () => {
                 <h2 className="text-primary tracking-wider text-[14px]">
                   CREATE AN ACCOUNT
                 </h2>
-                <button className="text-register-left-bg flex items-center gap-2">
+                <Link
+                  to="/login"
+                  className="text-register-left-bg flex items-center gap-2"
+                >
                   <AiOutlineUser /> <span>Sign In</span>
-                </button>
+                </Link>
               </div>
               <div className="px-3 py-4 w-full">
                 <form
@@ -173,6 +186,13 @@ const Register: React.FC = () => {
                       type="password"
                       label="Password"
                       variant="filled"
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                    />
+                    <PopoverPassword
+                      open={isPopoverOpen}
+                      password={formik.values.password}
+                      targetElement={inputRef.current}
                     />
                     <span className="text-red-500 text-xs absolute left-0 -bottom-5">
                       {formik.touched.password && formik.errors.password}
@@ -196,6 +216,7 @@ const Register: React.FC = () => {
           </div>
         </div>
       </div>
+      <LoadingBackDrop open={isLoading} />
     </div>
   );
 };

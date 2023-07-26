@@ -81,6 +81,7 @@ export const checkTokenVefifyAccount = async (
     const user = await userService.checkTokenVerifyEmail(id, token);
     res.status(200).json({ status: 200, data: user, message: authSuc.SUC_2 });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -122,7 +123,7 @@ export const googleCallBack = async (
 ) => {
   try {
     await userService.loginGoogleCallback(res, req.user._id);
-    res.redirect(`${process.env.FONTEND_HOST}`);
+    res.redirect(`${process.env.FRONTEND_HOST}`);
   } catch (err) {
     next(err);
   }
