@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import productService from "../service/productService";
-import { productSuc } from "../utils/responseMessage";
+import { authSuc, productSuc } from "../utils/responseMessage";
 
 export const createProduct = async (
   req: Request,
@@ -70,6 +70,36 @@ export const updateProductById = async (
     res
       .status(200)
       .json({ status: 200, data: updateProduct, message: productSuc.SUC_5 });
+  } catch (err) {
+    next(err);
+  }
+};
+//TODO: how to types for req.query
+interface queryParams {
+  keyword?: string;
+  sort?: string;
+  price?: string;
+  category?: string;
+  color?: string;
+  brand?: string;
+  page?: number;
+  limit?: number;
+}
+export const filterProduct = async (
+  req: Request<{}, {}, {}, queryParams>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { products, totalCount } = await productService.getFilterProduct(
+      req.query
+    );
+    res.status(200).json({
+      status: 200,
+      data: products,
+      countDocument: totalCount,
+      message: authSuc.SUC_7,
+    });
   } catch (err) {
     next(err);
   }

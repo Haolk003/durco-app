@@ -1,5 +1,3 @@
-import cookie from "cookie";
-import passport from "passport";
 import CryptoJS from "crypto-js";
 
 import userModel from "../models/userModel";
@@ -12,7 +10,6 @@ import createJwt from "../utils/createToken";
 import { Response } from "express";
 import checkToken from "../utils/checkToken";
 import sendEmail from "../utils/sendEmail";
-import { snakeCase } from "lodash";
 import validateMongoId from "../validation/validateId";
 import validatePassword from "../validation/validatePassword";
 interface registerProps {

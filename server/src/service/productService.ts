@@ -1,7 +1,9 @@
 import productModel from "../models/productModel";
+import { isEmpty } from "lodash";
 import validateMongoId from "../validation/validateId";
 import { productErr } from "../utils/responseMessage";
 import createError from "../utils/createError";
+import filterAndReplaceObject from "../utils/filterAndReplaceObject";
 
 interface createProductProps {
   banner: string;
@@ -52,6 +54,43 @@ const getAllProduct = async () => {
   const products = await productModel.find();
   return products;
 };
+interface IQuery {
+  keyword?: string;
+  sort?: string;
+  price?: string;
+  category?: string;
+  color?: string;
+  brand?: string;
+  page?: number;
+  limit?: number;
+}
+const getFilterProduct = async (query: IQuery) => {
+  const cleanedObject = filterAndReplaceObject(query);
+
+  const queryObj = !isEmpty(query.keyword)
+    ? Object.assign(
+        { title: { $regex: query.keyword, $options: "i" } },
+        cleanedObject
+      )
+    : cleanedObject;
+  const limit = query.limit || 10;
+  const skip = query.page ? (query.page - 1) * limit : 0;
+  let filterProduct = productModel.find(queryObj);
+  if (query.sort) {
+    const sortBy = query.sort.split(",").join(" ");
+    filterProduct = filterProduct.sort(sortBy);
+  } else {
+    filterProduct = filterProduct.sort("-createdAt");
+  }
+  const countryQuery = filterProduct.model.countDocuments(
+    filterProduct.getFilter()
+  );
+  const totalCount = await countryQuery.exec();
+  filterProduct = filterProduct.skip(skip).limit(limit);
+  const products = await filterProduct;
+  return { products, totalCount };
+};
+
 const getProductById = async (id: string) => {
   await validateMongoId(id);
   const product = await productModel.findById(id);
@@ -76,5 +115,7 @@ const productService = {
   getProductById,
   deleteProductById,
   updateProductById,
+  getFilterProduct,
 };
+
 export default productService;
